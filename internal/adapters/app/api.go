@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"gateway/internal/adapters/models/headers"
 	"gateway/internal/ports"
 	"net/http"
 )
@@ -15,7 +16,7 @@ func NewAppAdapter(core ports.GatewayInPorts, coms ports.GatewayOutPorts) *AppAd
 	return &AppAdapter{core: core, comsOut: coms}
 }
 
-func (app AppAdapter) GatewayProcessRequest(requestMethod *http.Request) []byte {
+func (app AppAdapter) GatewayProcessRequest(requestMethod *http.Request) ([]byte, headers.GatewayControl) {
 	return app.core.GatewayProcessRequest(requestMethod)
 }
 

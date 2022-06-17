@@ -2,6 +2,7 @@ package core
 
 import (
 	"fmt"
+	"gateway/internal/adapters/models/headers"
 	"gateway/internal/ports"
 	"io/ioutil"
 	"net/http"
@@ -16,15 +17,24 @@ func NewInAdapter(coms ports.DBPort) *InAdapter {
 	return &InAdapter{db: coms}
 }
 
-func (ia InAdapter) GatewayProcessRequest(r *http.Request) []byte {
+func (ia InAdapter) GatewayProcessRequest(r *http.Request) ([]byte, headers.GatewayControl) {
 	mtd := strings.ToUpper(r.Method)
+	rsHeaders := headers.GatewayControl{
+		ContentControl: map[string]string{
+			"Content-Type": "text/plain",
+		},
+
+		CookiesControl: map[string]string{
+			"Set-Cookie": "MyCookie",
+		},
+	}
 	if mtd != "POST" {
-		return []byte{}
+		return []byte{}, rsHeaders
 	}
 	serviceReq := r.Header.Get("serviceID")
 	serviceID, _ := ia.db.GetGatewayService(serviceReq)
 	fmt.Println(serviceID)
-	return ia.SeekService("http://localhost:5000")
+	return ia.SeekService("http://localhost:5000"), rsHeaders
 }
 
 func (ia InAdapter) GetServiceResource(serviceID string) (string, string) {

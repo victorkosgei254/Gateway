@@ -2,6 +2,7 @@ package left
 
 import (
 	"fmt"
+	"gateway/internal/adapters/models/headers"
 	"gateway/internal/ports"
 	"io"
 	"net/http"
@@ -22,8 +23,9 @@ type Service struct {
 
 func (adpt HTTPAdapter) StartListening(port string) {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		serviceResponse := adpt.app.GatewayProcessRequest(r)
-		w.Header().Add("Content-Type", "application/json")
+		serviceResponse, serviceHeaders := adpt.app.GatewayProcessRequest(r)
+		fmt.Println(serviceHeaders)
+		adpt.GatewayResourceControl(w, serviceHeaders)
 		io.WriteString(w, string(serviceResponse))
 	})
 
@@ -32,4 +34,12 @@ func (adpt HTTPAdapter) StartListening(port string) {
 
 func (adpt HTTPAdapter) RedirectToRequestedResource() {
 	fmt.Println("Redirecting user")
+}
+
+func (adpt HTTPAdapter) GatewayResourceControl(w http.ResponseWriter, target headers.GatewayControl) {
+	//Receives headers and write them to response
+	for k, v := range target.ContentControl {
+		w.Header().Add(k, v)
+	}
+
 }

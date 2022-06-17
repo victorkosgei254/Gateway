@@ -1,9 +1,12 @@
 package ports
 
-import "net/http"
+import (
+	"gateway/internal/adapters/models/headers"
+	"net/http"
+)
 
 type GatewayInPorts interface {
-	GatewayProcessRequest(requestMethod *http.Request) []byte
+	GatewayProcessRequest(requestMethod *http.Request) ([]byte, headers.GatewayControl)
 	GetServiceResource(serviceID string) (string, string)
 }
 
