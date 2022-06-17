@@ -1,7 +1,9 @@
 package ports
 
+import "net/http"
+
 type GatewayInPortsApp interface {
-	GatewayProcessRequest(requestMethod string) bool
+	GatewayProcessRequest(response *http.Request) []byte
 	GetServiceResource(serviceID string) (string, string)
 }
 

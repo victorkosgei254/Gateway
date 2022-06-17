@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"gateway/internal/ports"
+	"net/http"
 )
 
 type AppAdapter struct {
@@ -14,7 +15,7 @@ func NewAppAdapter(core ports.GatewayInPorts, coms ports.GatewayOutPorts) *AppAd
 	return &AppAdapter{core: core, comsOut: coms}
 }
 
-func (app AppAdapter) GatewayProcessRequest(requestMethod string) bool {
+func (app AppAdapter) GatewayProcessRequest(requestMethod *http.Request) []byte {
 	return app.core.GatewayProcessRequest(requestMethod)
 }
 

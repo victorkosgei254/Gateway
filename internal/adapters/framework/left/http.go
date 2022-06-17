@@ -22,17 +22,9 @@ type Service struct {
 
 func (adpt HTTPAdapter) StartListening(port string) {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-
-		if !adpt.app.GatewayProcessRequest(r.Method) {
-			io.WriteString(w, "Bad request...OK")
-			return
-		}
-		resiurceURL, resourcePort := adpt.app.GetServiceResource("serviceID")
-		fmt.Println(resiurceURL, resourcePort)
-		adpt.RedirectToRequestedResource()
+		serviceResponse := adpt.app.GatewayProcessRequest(r)
 		w.Header().Add("Content-Type", "application/json")
-		io.WriteString(w, `{results:"Resource obtained successfully"}`)
-
+		io.WriteString(w, string(serviceResponse))
 	})
 
 	http.ListenAndServe(port, nil)

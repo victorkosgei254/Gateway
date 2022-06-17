@@ -12,5 +12,5 @@ func NewDBAdapter(databaseName, databaseSource string) *DBAdapter {
 
 func (db DBAdapter) GetGatewayService(serviceID string) (string, string) {
 
-	return "service.localhost:port", "service/route"
+	return "http://localhost:5000", "/"
 }
