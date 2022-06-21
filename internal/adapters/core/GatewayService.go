@@ -2,7 +2,9 @@ package core
 
 import (
 	"fmt"
+	"gateway/internal/models"
 	ports "gateway/internal/ports"
+	"strings"
 )
 
 /*
@@ -25,11 +27,20 @@ func STARTGATEWAYSERVICE(db ports.DBPorts, msg ports.GatewayMessengerPorts) *Gat
 
 }
 
-func (gw GatewayService) GatewayProcessRequest() {
-	fmt.Println("GATEWAY SERIVE -> RECEIVED REQUEST FOR PROCESSING...OK")
-	fmt.Println("GATEWAY SERIVE -> MAKING DB REQUESTS")
-	fmt.Println("GATEWAY SERIVE -> Get gateway settings...OK")
-	gw.db.GetGatewaySettings()
+func (gw GatewayService) GatewayProcessRequest(reqForm models.ServiceRequisitionForm) ([]byte, interface{}) {
+	hed := map[string]string{
+		"Content-Type": "application/json",
+	}
+	var res []byte
+	settings := gw.db.GetGatewaySettings(reqForm.ServiceHeaders.ServiceID)
+	fmt.Printf("%v\n", settings)
+	if strings.ToLower(reqForm.ServiceHeaders.ContentType) != "application/json" {
+		fmt.Println("#########")
+		res = []byte(`{"message":"There was an error fetching the resource"}`)
+
+	} else {
+		res = []byte(`{"message":"Resource Successfully Fetched"}`)
+	}
 	fmt.Println("GATEWAY SERIVE -> Get gateway service config...OK")
 	gw.db.GetServiceConfig()
 	fmt.Println("GATEWAY SERIVE -> Get  verify API KEY...OK")
@@ -40,4 +51,6 @@ func (gw GatewayService) GatewayProcessRequest() {
 	gw.msg.CheckAuthorization()
 	gw.msg.ExecuteClientRequest()
 	fmt.Println("GATEWAY SERIVE -> CLIENT GETS RESPONSE")
+
+	return res, hed
 }

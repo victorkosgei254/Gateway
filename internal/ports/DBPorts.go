@@ -1,5 +1,7 @@
 package ports
 
+import "gateway/internal/models"
+
 /*
 	This interface defines what Kind of DB ports are
 	available to the  core and what kind of Action it can perform on the
@@ -30,8 +32,16 @@ type DBPorts interface {
 	/*
 		Retrieve Gateway settings, i.e
 		ALLOW METHODS,ALLOW SERVICES,
+
+		Use a Service ID to Get the setting for that service.
+		ServiceID,
+		Post,
+		Get,
+		Authorization
+		Authentication
+
 	*/
-	GetGatewaySettings()
+	GetGatewaySettings(serviceID string) models.GatewaySettings
 
 	/*
 		Gets Service Configurations, i.e

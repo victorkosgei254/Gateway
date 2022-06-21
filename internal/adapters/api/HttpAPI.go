@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"gateway/internal/models"
 	ports "gateway/internal/ports"
 )
 
@@ -18,7 +19,7 @@ func INITHTTPAPI(gw ports.GatewayPorts) *HTTPApi {
 	return &HTTPApi{gw: gw}
 }
 
-func (api HTTPApi) GatewayProcessRequest() {
+func (api HTTPApi) GatewayProcessRequest(reqForm models.ServiceRequisitionForm) ([]byte, interface{}) {
 	fmt.Println("HTTP API SERVICE -> FROM HTTP API....MAKING A CALL TO CORE, GATEWAYPROCESS REQUEST...OK")
-	api.gw.GatewayProcessRequest()
+	return api.gw.GatewayProcessRequest(reqForm)
 }

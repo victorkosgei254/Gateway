@@ -3,6 +3,8 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"gateway/internal/models"
+	"log"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -24,16 +26,16 @@ func USESQLDB(dataSourceName string) *SQLDBAdapter {
 	fmt.Println("Connecting to MYSQL DATABASE")
 	if err != nil {
 		// log.Fatal("Cannot Connect to MYSQL Instance...OK")
-		fmt.Println("Could not connect to DB")
+		fmt.Println("Could not connect to DB", err)
 	}
 
-	//test the connection
-	// pingerr := sqldb.Ping()
+	// test the connection
+	pingerr := sqldb.Ping()
 
-	// if pingerr != nil {
-	// 	// log.Fatal("Could not establish connection to MYSQL DB..EXITING")
-	// 	fmt.Println("error")
-	// }
+	if pingerr != nil {
+		log.Fatal("Could not establish connection to MYSQL DB..EXITING")
+		fmt.Println("error")
+	}
 
 	return &SQLDBAdapter{db: sqldb}
 }
@@ -42,8 +44,16 @@ func (sqlAdp SQLDBAdapter) VerifyAPIKEY(key string) {
 	fmt.Println("SQL DB -> VERIFYING API KEY ...OK")
 }
 
-func (sqlAdp SQLDBAdapter) GetGatewaySettings() {
+func (sqlAdp SQLDBAdapter) GetGatewaySettings(serviceID string) models.GatewaySettings {
 	fmt.Println("SQL DB -> GETTING GATEWAY SETTINGS ...OK")
+	return models.GatewaySettings{
+		ServiceID:      "123",
+		Post:           true,
+		Get:            false,
+		Authorization:  true,
+		Authentication: true,
+		CustomMethods:  true,
+	}
 }
 
 func (sqlAdp SQLDBAdapter) GetServiceConfig() {

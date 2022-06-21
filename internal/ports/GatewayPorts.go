@@ -1,5 +1,7 @@
 package ports
 
+import "gateway/internal/models"
+
 /*
 
 This interface provide ports for driver actors to interact with the GatewayService.
@@ -9,5 +11,5 @@ therefore there is also a need for an APPLICATION layer to transform these reque
 Gateway
 */
 type GatewayPorts interface {
-	GatewayProcessRequest()
+	GatewayProcessRequest(reqForm models.ServiceRequisitionForm) ([]byte, interface{})
 }
