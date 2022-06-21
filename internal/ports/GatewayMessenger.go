@@ -1,5 +1,7 @@
 package ports
 
+import "gateway/internal/models"
+
 /*
 	This defines all functions needed to be implemented by a service for it to be a GatewayMessenger.
 	GatewayMessenger is a HTTP Client that receives a Request from the GatewayService and executes it.
@@ -13,7 +15,7 @@ type GatewayMessengerPorts interface {
 
 		HTTPCLIENT
 	*/
-	ExecuteClientRequest()
+	ExecuteClientRequest(payload models.GatewaySettings) []byte
 
 	/*
 		Checks Authorization of a GatewayService against some set rules

@@ -17,40 +17,34 @@ import (
 	It requires DataBase, GatewayMessenger
 */
 type GatewayService struct {
-	db  ports.DBPorts
+	db  ports.GWDBPorts
 	msg ports.GatewayMessengerPorts
 }
 
-func STARTGATEWAYSERVICE(db ports.DBPorts, msg ports.GatewayMessengerPorts) *GatewayService {
+func STARTGATEWAYSERVICE(db ports.GWDBPorts, msg ports.GatewayMessengerPorts) *GatewayService {
 	fmt.Println("STARTING GATEWAY SERVICE...OK")
 	return &GatewayService{db: db, msg: msg}
 
 }
 
 func (gw GatewayService) GatewayProcessRequest(reqForm models.ServiceRequisitionForm) ([]byte, interface{}) {
+
 	hed := map[string]string{
 		"Content-Type": "application/json",
 	}
-	var res []byte
 	settings := gw.db.GetGatewaySettings(reqForm.ServiceHeaders.ServiceID)
-	fmt.Printf("%v\n", settings)
-	if strings.ToLower(reqForm.ServiceHeaders.ContentType) != "application/json" {
-		fmt.Println("#########")
-		res = []byte(`{"message":"There was an error fetching the resource"}`)
+	keyAutho := gw.db.VerifyAPIKEY(reqForm.ServiceHeaders.APIKey)
 
+	settingsCheckSum := settings.CheckSum == "123"
+	keyAuthoCheckSum := keyAutho.CheckSum == "123"
+	methodCheck := strings.Contains(settings.Methods, reqForm.ServiceHeaders.Method)
+	mserviceCheck := strings.Contains(keyAutho.Access, reqForm.ServiceHeaders.ServiceID)
+	var resp []byte
+	if methodCheck && mserviceCheck && settingsCheckSum && keyAuthoCheckSum {
+		resp = gw.msg.ExecuteClientRequest(settings)
 	} else {
-		res = []byte(`{"message":"Resource Successfully Fetched"}`)
+		resp = []byte(models.ERR_MSG)
 	}
-	fmt.Println("GATEWAY SERIVE -> Get gateway service config...OK")
-	gw.db.GetServiceConfig()
-	fmt.Println("GATEWAY SERIVE -> Get  verify API KEY...OK")
-	gw.db.VerifyAPIKEY("123")
-	fmt.Println("GATEWAY SERIVE -> Get user auth...OK")
-	gw.db.GetUserAuth()
-	fmt.Println("GATEWAY SERIVE -> EVERYTHING CHECKS OUT SENDIN REQUEST TO MESSENGER")
-	gw.msg.CheckAuthorization()
-	gw.msg.ExecuteClientRequest()
-	fmt.Println("GATEWAY SERIVE -> CLIENT GETS RESPONSE")
 
-	return res, hed
+	return resp, hed
 }

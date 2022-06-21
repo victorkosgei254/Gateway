@@ -18,7 +18,7 @@ import "gateway/internal/models"
 	4. Handles Authentication user authentication.
 
 */
-type DBPorts interface {
+type GWDBPorts interface {
 	/*
 		VerifyAPIKEY
 		Receives APIKEY from client, for http from Headers (Authorization)
@@ -28,7 +28,7 @@ type DBPorts interface {
 
 
 	*/
-	VerifyAPIKEY(key string)
+	VerifyAPIKEY(key string) models.APIKEY
 	/*
 		Retrieve Gateway settings, i.e
 		ALLOW METHODS,ALLOW SERVICES,
@@ -52,11 +52,5 @@ type DBPorts interface {
 			SERVICEURL : http://localhost:9009
 		}
 	*/
-	GetServiceConfig()
 
-	/*
-		Performs User authentication
-
-	*/
-	GetUserAuth()
 }

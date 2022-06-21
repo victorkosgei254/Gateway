@@ -8,10 +8,10 @@ package models
 	Authorizations and authentication if false, override check api keys
 */
 type GatewaySettings struct {
-	ServiceID      string `json:"serviceID"`
-	Post           bool   `json:"post"`
-	Get            bool   `json:"get"`
-	Authorization  bool   `json:"authorization"`
-	Authentication bool   `json:"authentication"`
-	CustomMethods  bool   `json:"customMethods"`
+	ServiceID     string `json:"serviceID"`
+	Methods       string `json:"methods"`
+	APIKey        string `json:"apikey"`
+	Authorization string `json:"authorization"`
+	ServiceURL    string `json:"serviceURL"`
+	CheckSum      string `json:"checksum"`
 }

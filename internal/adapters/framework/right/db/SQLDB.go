@@ -40,19 +40,25 @@ func USESQLDB(dataSourceName string) *SQLDBAdapter {
 	return &SQLDBAdapter{db: sqldb}
 }
 
-func (sqlAdp SQLDBAdapter) VerifyAPIKEY(key string) {
+func (sqlAdp SQLDBAdapter) VerifyAPIKEY(key string) models.APIKEY {
 	fmt.Println("SQL DB -> VERIFYING API KEY ...OK")
+	return models.APIKEY{
+		UserID:    "testuser123",
+		CreatedOn: "12-21-22",
+		Access:    "AUTH;AUTHO;MRKS",
+		CheckSum:  "123",
+	}
 }
 
 func (sqlAdp SQLDBAdapter) GetGatewaySettings(serviceID string) models.GatewaySettings {
 	fmt.Println("SQL DB -> GETTING GATEWAY SETTINGS ...OK")
 	return models.GatewaySettings{
-		ServiceID:      "123",
-		Post:           true,
-		Get:            false,
-		Authorization:  true,
-		Authentication: true,
-		CustomMethods:  true,
+		ServiceID:     "test123",
+		Methods:       "POST",
+		APIKey:        "eYds72mdmshnsmnd=",
+		Authorization: " sa",
+		ServiceURL:    "http://localhost:5000",
+		CheckSum:      "123",
 	}
 }
 

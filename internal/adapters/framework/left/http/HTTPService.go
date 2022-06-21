@@ -23,12 +23,14 @@ func STARTHTTPSERVICE(api ports.HTTPAPIPorts) *HTTPService {
 
 func (ht HTTPService) StartListening(port string) {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println()
+		fmt.Println(r.Context().Value("credentials"))
 		serviceHeaders := models.ServiceRequest{
 			ContentType:   r.Header.Get("Content-Type"),
 			ServiceID:     r.Header.Get("ServiceID"),
+			APIKey:        "key123",
 			Method:        r.Method,
 			Authorization: r.Header.Get("Authorization"),
+			Cookies:       r.Cookies(),
 		}
 
 		body, _ := ioutil.ReadAll(r.Body)

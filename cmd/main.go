@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	var db ports.DBPorts = db.USESQLDB("root:kosgei4182.@tcp(localhost:3306)/test_123?parseTime=true")
+	var db ports.GWDBPorts = db.USESQLDB("root:kosgei4182.@tcp(localhost:3306)/test_123?parseTime=true")
 	var gwMessenger ports.GatewayMessengerPorts = gatewaymessenger.INITIALIZEGWMESSENGER(db)
 	var gwService ports.GatewayPorts = core.STARTGATEWAYSERVICE(db, gwMessenger)
 	var api ports.HTTPAPIPorts = api.INITHTTPAPI(gwService)
